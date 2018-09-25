@@ -6,6 +6,12 @@
     <input type="text" class="form-control" requiered name="username" [(ngModel)]="model.username" placeholder="Username">
   </div>
 
+   <!-- <div class="form-grupo">
+     <label for="fauvoriteValue">What is your fauvorite value?</label>
+     <select class="form-control" id="fauvoriteValue" >
+       <option *ngFor="let value of valuesFromHome" [value]="value">{{value.name}}</option>
+     </select>
+   </div> -->
   <div class="form-group">
     <input type="password" class="form-control" required name="password" [(ngModel)]="model.password" placeholder="Password">
   </div>
