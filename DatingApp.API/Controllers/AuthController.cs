@@ -19,19 +19,19 @@ namespace DatingApp.API.Controllers
     public class AuthController : ControllerBase
     {
         private readonly IAuthRepository _repo;
-          private readonly IConfiguration _config;
-        public AuthController(IAuthRepository repo,IConfiguration config)
+        private readonly IConfiguration _config;
+        public AuthController(IAuthRepository repo, IConfiguration config)
         {
             _repo = repo;
-            _config=config;
+            _config = config;
         }
         [HttpPost("register")]
         public async Task<IActionResult> Register([FromBody]UserForRegisterDto userForRegisterDto)
         {
             // val 
 
-            if(!ModelState.IsValid)
-            return BadRequest(ModelState);
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
             userForRegisterDto.Username = userForRegisterDto.Username.ToLower();
             if (await _repo.UserExists(userForRegisterDto.Username))
                 return BadRequest("Username already Exists");
@@ -47,16 +47,18 @@ namespace DatingApp.API.Controllers
 
         }
 
-         [HttpPost("login")]
+        [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody]UserForLoginDto userForLoginDto)
         {
+            // try
+            // {
+
             var userFromRepo = await _repo.Login(userForLoginDto.Username.ToLower(), userForLoginDto.Password);
 
             if (userFromRepo == null)
                 return Unauthorized();
-
             var claims = new[]
-            {
+                      {
                 new Claim(ClaimTypes.NameIdentifier, userFromRepo.Id.ToString()),
                 new Claim(ClaimTypes.Name, userFromRepo.UserName)
             };
@@ -72,7 +74,7 @@ namespace DatingApp.API.Controllers
                 Expires = DateTime.Now.AddDays(1),
                 SigningCredentials = creds
             };
-            
+
 
             var tokenHandler = new JwtSecurityTokenHandler();
 
@@ -83,8 +85,17 @@ namespace DatingApp.API.Controllers
             return Ok(new
             {
                 token = tokenHandler.WriteToken(token),
-               // user
+                // user
             });
+
+
+
+            // }
+            // catch (Exception)
+            // {
+            //     return StatusCode(500, "Computer says not !!");
+            // }
+
         }
 
     }
